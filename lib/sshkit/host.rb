@@ -26,7 +26,11 @@ module SSHKit
       if host_string_or_options_hash == :local
         @local = true
         @hostname = "localhost"
-        @user = Etc.getpwuid.name
+        begin
+          @user = Etc.getpwuid.name
+        rescue
+          @user = ENV['USER']
+        end
       elsif !host_string_or_options_hash.is_a?(Hash)
         suitable_parsers = [
           SimpleHostParser,
